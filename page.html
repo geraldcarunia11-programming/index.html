@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { margin: 0; padding: 16px; }
+
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Private Message</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #030305;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .page {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* =========================
+           SCREEN 1 - TERMINAL
+        ========================= */
+
+        #terminalPage {
+            display: flex;
+            background:
+                radial-gradient(
+                    circle at 50% 45%,
+                    rgba(255, 0, 100, 0.08),
+                    transparent 45%
+                ),
+                #030305;
+        }
+
+        .terminal {
+            width: 88%;
+            max-width: 520px;
+            font-family: monospace;
+        }
+
+        .terminal-line {
+            margin: 16px 0;
+            font-size: clamp(13px, 3.5vw, 17px);
+            line-height: 1.6;
+            text-shadow: 0 0 8px currentColor;
+        }
+
+        .pink {
+            color: #ff4f91;
+        }
+
+        .green {
+            color: #39ff6a;
+        }
+
+        .white {
+            color: #d8d8d8;
+        }
+
+        .gray {
+            color: #777;
+        }
+
+        #decryptBtn {
+            margin-top: 10px;
+            padding: 14px 25px;
+
+            background: transparent;
+            color: #ff4f91;
+
+            border: 1px solid #ff4f91;
+
+            font-family: monospace;
+            font-size: 14px;
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 0 12px rgba(255, 79, 145, 0.12);
+
+            transition: 0.3s ease;
+        }
+
+        #decryptBtn:active {
+            transform: scale(0.96);
+        }
+
+        #decryptBtn:hover {
+            background: rgba(255, 79, 145, 0.08);
+        }
+
+        /* =========================
+           SCREEN 2 - HIII
+        ========================= */
+
+        #messagePage {
+            display: none;
+
+            background:
+                radial-gradient(
+                    circle at 30% 30%,
+                    rgba(255, 0, 120, 0.13),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 70% 70%,
+                    rgba(120, 0, 255, 0.13),
+                    transparent 35%
+                ),
+                #050507;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 480px;
+            padding: 40px 30px;
+            text-align: center;
+
+            background: rgba(255, 255, 255, 0.055);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 22px;
+
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            box-shadow:
+                0 20px 70px rgba(0, 0, 0, 0.5),
+                0 0 35px rgba(255, 0, 130, 0.08);
+        }
+
+        .small {
+            color: #ff6fa5;
+            font-family: monospace;
+            font-size: 12px;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+        }
+
+        .hello {
+            font-size: clamp(40px, 10vw, 55px);
+            font-weight: bold;
+        }
+
+        .line {
+            width: 50px;
+            height: 2px;
+            margin: 22px auto;
+
+            background: #ff4f91;
+            box-shadow: 0 0 12px #ff4f91;
+        }
+
+        .message-text {
+            color: #bdbdbd;
+            font-size: 14px;
+            margin: 20px 0 28px;
+        }
+
+        #openBtn {
+            padding: 13px 25px;
+
+            border: 1px solid #ff4f91;
+            border-radius: 10px;
+
+            background: rgba(255, 79, 145, 0.08);
+            color: #ff75aa;
+
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* =========================
+           SCREEN 3 - QUESTION
+        ========================= */
+
+        #questionPage {
+            display: none;
+
+            background:
+                radial-gradient(
+                    circle at 30% 30%,
+                    rgba(255, 0, 120, 0.13),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 70% 70%,
+                    rgba(120, 0, 255, 0.13),
+                    transparent 35%
+                ),
+                #050507;
+        }
+
+        .question-title {
+            font-size: clamp(34px, 8vw, 48px);
+            line-height: 1.08;
+        }
+
+        .question-text {
+            color: #bdbdbd;
+            font-size: 14px;
+            margin: 20px 0 28px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            min-height: 55px;
+        }
+
+        .buttons button {
+            min-width: 100px;
+            padding: 13px 24px;
+            border-radius: 10px;
+
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #yesBtn {
+            border: none;
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff4f91,
+                    #9d4edd
+                );
+
+            box-shadow:
+                0 8px 25px rgba(255, 50, 140, 0.25);
+        }
+
+        #noBtn {
+            color: #ddd;
+
+            background:
+                rgba(255, 255, 255, 0.08);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.12);
+
+            touch-action: none;
+
+            transition:
+                left 0.8s ease,
+                top 0.8s ease,
+                transform 0.5s ease,
+                opacity 0.5s ease;
+        }
+
+        /* =========================
+           SCREEN 4 - FINAL
+        ========================= */
+
+        #lastPage {
+            display: none;
+            text-align: center;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(255, 0, 120, 0.13),
+                    transparent 45%
+                ),
+                #050507;
+        }
+
+        #lastPage h1 {
+            font-size: clamp(60px, 15vw, 100px);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff4f91,
+                    #b45cff
+                );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+
+            margin-bottom: 10px;
+        }
+
+        #lastPage p {
+            color: #ddd;
+            font-size: 20px;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- =========================
+         SCREEN 1
+    ========================= -->
+
+    <div class="page" id="terminalPage">
+
+        <div class="terminal">
+
+            <div class="terminal-line pink">
+                [system] Initializing heart.PROTOCOL_v2.0...
+            </div>
+
+            <div class="terminal-line green">
+                [status] READY
+            </div>
+
+            <div class="terminal-line white">
+                &gt; One encrypted package found for you.
+            </div>
+
+            <button id="decryptBtn">
+                🔒 DECRYPT MESSAGE
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         SCREEN 2
+    ========================= -->
+
+    <div class="page" id="messagePage">
+
+        <div class="card">
+
+            <div class="small">
+                A LITTLE MESSAGE
+            </div>
+
+            <div class="hello">
+                Hiii
+            </div>
+
+            <div class="line"></div>
+
+            <div class="message-text">
+                May gusto lang sana akong itanong.
+            </div>
+
+            <button id="openBtn">
+                Open
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         SCREEN 3
+    ========================= -->
+
+    <div class="page" id="questionPage">
+
+        <div class="card">
+
+            <div class="small">
+                PRIVATE MESSAGE
+            </div>
+
+            <h1 class="question-title">
+                Pwede ba tayong<br>
+                mag-usap?
+            </h1>
+
+            <div class="line"></div>
+
+            <div class="question-text">
+                Kahit 20 million years lang hehe.
+            </div>
+
+            <div class="buttons">
+
+                <button id="yesBtn">
+                    Yes
+                </button>
+
+                <button id="noBtn">
+                    No
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         SCREEN 4
+    ========================= -->
+
+    <div class="page" id="lastPage">
+
+        <div>
+
+            <h1>
+                yeyyyy
+            </h1>
+
+            <p>
+                thank youuuuu
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        const terminalPage =
+            document.getElementById("terminalPage");
+
+        const messagePage =
+            document.getElementById("messagePage");
+
+        const questionPage =
+            document.getElementById("questionPage");
+
+        const lastPage =
+            document.getElementById("lastPage");
+
+        const decryptBtn =
+            document.getElementById("decryptBtn");
+
+        const openBtn =
+            document.getElementById("openBtn");
+
+        const yesBtn =
+            document.getElementById("yesBtn");
+
+        const noBtn =
+            document.getElementById("noBtn");
+
+
+        /* =========================
+           TERMINAL → HIII
+        ========================= */
+
+        decryptBtn.addEventListener(
+            "click",
+            function() {
+
+                terminalPage.style.display =
+                    "none";
+
+                messagePage.style.display =
+                    "flex";
+
+            }
+        );
+
+
+        /* =========================
+           HIII → QUESTION
+        ========================= */
+
+        openBtn.addEventListener(
+            "click",
+            function() {
+
+                messagePage.style.display =
+                    "none";
+
+                questionPage.style.display =
+                    "flex";
+
+            }
+        );
+
+
+        /* =========================
+           NO BUTTON
+        ========================= */
+
+        let count = 0;
+
+        const MAX_TAPS = 40;
+
+
+        noBtn.addEventListener(
+            "pointerdown",
+            function(event) {
+
+                event.preventDefault();
+
+                count++;
+
+
+                const width =
+                    noBtn.offsetWidth;
+
+                const height =
+                    noBtn.offsetHeight;
+
+                const padding = 20;
+
+
+                const maxX =
+                    window.innerWidth -
+                    width -
+                    padding;
+
+                const maxY =
+                    window.innerHeight -
+                    height -
+                    padding;
+
+
+                let x =
+                    Math.random() * maxX;
+
+                let y =
+                    Math.random() * maxY;
+
+
+                if (x < padding) {
+                    x = padding;
+                }
+
+                if (y < padding) {
+                    y = padding;
+                }
+
+
+                noBtn.style.position =
+                    "fixed";
+
+                noBtn.style.left =
+                    x + "px";
+
+                noBtn.style.top =
+                    y + "px";
+
+
+                if (count >= 30) {
+
+                    noBtn.style.transform =
+                        "scale(0.85)";
+
+                }
+
+
+                if (count >= 36) {
+
+                    noBtn.style.transform =
+                        "scale(0.65)";
+
+                }
+
+
+                if (count >= MAX_TAPS) {
+
+                    noBtn.style.transform =
+                        "scale(0.3)";
+
+                    noBtn.style.opacity =
+                        "0";
+
+                    noBtn.style.pointerEvents =
+                        "none";
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           YES → FINAL
+        ========================= */
+
+        yesBtn.addEventListener(
+            "click",
+            function() {
+
+                questionPage.style.display =
+                    "none";
+
+                lastPage.style.display =
+                    "flex";
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
+<script>
+try {
+
+} catch(e) {
+  document.body.innerHTML += '<pre style="color:red;margin-top:1rem;font-size:12px;">Error: ' + e.message + '</pre>';
+}
+</script>
+</body>
+</html>
